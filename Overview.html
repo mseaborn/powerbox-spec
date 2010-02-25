@@ -28,7 +28,7 @@
     src="http://www.w3.org/Icons/w3c_home"></a></p>
 
   <h1>Powerbox</h1>
-  <h2>Editor's Draft 19 February 2010</h2>
+  <h2>Editor's Draft 23 February 2010</h2>
   <dl>
     <dt>Editors:</dt>
       <dd>Tyler Close (<a href="http://www.google.com/">Google</a>)</dd>
@@ -92,13 +92,15 @@ contains <a
   <li><a href="#conformance"><span class=secno>2</span> Conformance
   Criteria</a></li>
   <li><a href="#model"><span class=secno>3</span> Model</a></li>
-  <li><a href="#install"><span class=secno>4</span> Provider Installation</a></li>
+  <li><a href="#register"><span class=secno>4</span> Provider
+  Registration</a></li>
   <li><a href="#request"><span class=secno>5</span> Resource
   Requisition</a></li>
   <li><a href="#provide"><span class=secno>6</span> Resource Provision</a></li>
-  <li><a href="#access"><span class=secno>7</span> Resource Access</a>
+  <li><a href="#interact"><span class=secno>7</span> Resource Interaction</a>
   <ul class="toc">
-    <li><a href="#submit"><span class=secno>7.1</span> Form Submission</a></li>
+    <li><a href="#submit"><span class=secno>7.1</span> <code>&lt;FORM&gt;</code>
+    Submission</a></li>
   </ul></li>
   <li><a href="#define"><span class=secno>8</span> Resource Definition</a></li>
   <li class=no-num><a href="#examples">Examples</a>
@@ -112,19 +114,18 @@ contains <a
 
 <h2 id="introduction"><span class="secno">1</span> Introduction</h2>
 <p><em>This section is non-normative.</em></p>
-<p>Today's users have access to a great variety of private resources beyond the
-files stored on their local computing device. Web sites maintain user
-collections of photos, email, contact information, documents, videos and other
-kinds content.  In addition to static content, these sites also offer
-interactive resources such as discussion forums and event planning. A great
-variety of such sites exist and ever more are created. Today's computing devices
-are also typically equiped with many sensors, such as a camera, microphone,
-geolocation and even physical orientation of the device. These sensors enable
-quick creation of new resources.  In such a resource rich environment, a
-particular resource might want to support linking and interaction with other
-resources without being tightly coupled to where these resources are hosted or
-how they are produced. To meet this need, we introduce a mechanism that
-enables:</p>
+<p>Today's users have a great variety of private resources beyond the files
+stored on their local computing device. Web sites maintain user collections of
+photos, email, contact information, documents, videos and other types of
+content.  In addition to static content, these sites also offer interactive
+resources such as discussion forums and event planning. A great variety of such
+sites exist and ever more are created. Today's computing devices are also
+typically equiped with many sensors, such as a camera, microphone, geolocation
+and even physical orientation of the device. These sensors enable quick creation
+of new resources.  In such a resource rich environment, a particular resource
+might want to support linking and interaction with other resources without being
+tightly coupled to where these resources are hosted or how they are produced. To
+meet this need, we introduce a mechanism that enables:</p>
 <ul>
 <li>customer content to declare interest in a particular type of resource</li>
 <li>provider content to declare availability of resources</li>
@@ -174,21 +175,37 @@ the various actors and artifacts involved in these interactions.</p>
 
 <p>We aim to facilitate user directed introduction of resources to customer
 content. <dfn id="customer">Customer</dfn> content declares interest in a
-particular kind of resource.  A <dfn id="provider">Provider</dfn> is a resource
-that responds to an HTTP request asking for a <dfn
-id="provided-resource">provided resource</dfn>. The Provider refers to the
-provided resource with a URL to be given to the Customer content.  An
-interactive Provider additionally returns a representation to be presented to
-the user. This presentation typically supports user selection or configuration
-of the provided resource.  A non-interactive Provider requires no user
-interaction to provide a resource and so only returns a URL for the provided
-resource.</p>
+particular type of resource identified by MIME media types and/or HTML class
+names.  A <dfn id="provider">Provider</dfn> is a resource that responds to an
+HTTP request asking for a <dfn id="provided-resource">provided resource</dfn>. A
+<dfn id="powerbox">Powerbox</dfn> is the part of a user-agent that mediates
+introductions of provided resources to Customers.  When a user acts on a
+Customer request, the Powerbox presents the user with a choice of registered
+Providers.  The Powerbox typically does not interpret any part of a Customer
+request and so does not perform any filtering of Providers. The Powerbox simply
+forwards a Customer request to a user selected Provider. A Provider responds to
+this request with a URL for a provided resource, which the Powerbox forwards to
+the Customer content.  An interactive Provider additionally returns a
+representation to be presented to the user, but withheld from the Customer
+content. This presentation typically supports user selection or configuration of
+the provided resource.  A non-interactive Provider requires no user interaction
+to provide a resource and so only returns a URL for the provided resource.</p>
 
-<h2 id="install"><span class="secno">4</span> Provider Installation</h2>
-<p>Content offers a <a href="#provider">Provider</a> for installation in a
-user-agent by including a link with a <code>rel</code> attribute of value
-<code>Provider</code>. The link's <code>href</code> attribute specifies the URL
-for the Provider.</p>
+<p>It is expected that Providers will be coarse grained, acting as a gateway to
+a great number of resources. For example, a given Provider might provide all
+user accessible resources at a particular Web site. Once selected for a
+particular Customer request, a Provider can use the specified type identifiers
+and user interaction to choose among the Provider's resources. Although there
+may exist a great number of Providers, it is expected that any particular user
+will only register a small subset of offered Providers with their Powerbox.
+Consequently, the list of Providers a Powerbox presents to a user is expected to
+be relatively short.</p>
+
+<h2 id="register"><span class="secno">4</span> Provider Registration</h2>
+<p>Content offers a <a href="#provider">Provider</a> for registration with a <a
+href="#powerbox">Powerbox</a> by including a link with a <code>rel</code>
+attribute of value <code>Provider</code>. The link's <code>href</code> attribute
+specifies the <dfn id="provider-url">Provider URL</dfn>.</p>
 
 <div class="example">
 <p>For example, a page offers a <a href="#provider">Provider</a> by including a
@@ -201,13 +218,19 @@ including a <code>&lt;A&gt;</code> such as:</p>
 <pre>
 &lt;a rel="Provider" href="/myvideos"&gt;Video Selector&lt;/a&gt;
 </pre>
+<p>A Web site might announce the availability of a <a
+href="#provider">Provider</a> in much the same way it does an RSS feed. A site
+might link to a <a href="#provider">Provider</a> from all of its pages or only
+on pages where it's most relevant. Similarly, a browser might signal an offered
+<a href="#provider">Provider</a> in much the same way it signals an offered RSS
+feed, using a passive indicator instead of prompting the user.</p>
 </div>
 
 <p>A user-agent <em class=ct>MUST</em> provide a presentation of an offered
 <a href="#provider">Provider</a> that enables the user to request it be
-installed, unless it is already installed. URI equivalence, using any of the
+registered, unless it is already registered. URI equivalence, using any of the
 techniques defined in <a href="#ref-uri">[RFC3986]</a>, can be used to determine
-if an offered <a href="#provider">Provider</a> is the same as an installed
+if an offered <a href="#provider">Provider</a> is the same as a registered
 one.</p>
 
 <h2 id="request"><span class="secno">5</span> Resource Requisition</h2>
@@ -225,36 +248,41 @@ expressed as:</p>
 </pre>
 </div>
 
-<p>The <code>class</code>, <code>accept</code> and <code>multiple</code>
-attributes of the <a href="#requisition">requisition</a> control identify the
-type of requested resource. The <code>alt</code> or <code>title</code> attribute
-expresses the reason for the request.</p>
+<p>The following <a href="#ref-html4">[HTML4]</a> attributes of a <a
+href="#requisition">requisition</a> control are <dfn
+id="requisition-parameters">requisition parameters</dfn>:</p>
+<ul>
+<li><code><a href="http://www.w3.org/TR/html401/struct/objects.html#adef-alt">alt</a></code>: <a href="#customer">Customer</a>'s reason for the request</li>
+<li><code><a href="http://www.w3.org/TR/html401/struct/global.html#adef-title">title</a></code>: <a href="#customer">Customer</a>'s reason for the request</li>
+<li><code><a href="http://www.w3.org/TR/html401/struct/global.html#adef-class">class</a></code>: requested resource types</li>
+<li><code><a href="http://www.w3.org/TR/html401/interact/forms.html#adef-accept">accept</a></code>: accepted MIME media types</li>
+<li><code><a href="http://www.w3.org/TR/html401/interact/forms.html#adef-multiple">multiple</a></code>: can a <a href="#provider">Provider</a> provide a collection of resources for this <a href="#requisition">requisition</a></li>
+</ul>
+
+<p>If a Customer has additional data to transfer, it can be sent in a subsequent
+request to the <a href="#provided-resource">provided resource</a>. The data in
+the <a href="#requisition">requisition</a> is only intended to support
+designation of the <a href="#provided-resource">provided resource</a>.</p>
 
 <h2 id="provide"><span class="secno">6</span> Resource Provision</h2>
 <p>When a user activates a <a href="#requisition">requisition</a> control, the
-user-agent <em class=ct>MUST</em> enable user selection of an installed <a
-href="#provider">Provider</a>. If the user selects one, the user-agent sends the
-selected <a href="#provider">Provider</a> a request for a <a
+<a href="#powerbox">Powerbox</a> <em class=ct>MUST</em> enable user selection of
+a registered <a href="#provider">Provider</a>. If the user selects one, the
+<a href="#powerbox">Powerbox</a> sends the selected <a
+href="#provider">Provider</a> a request for a <a
 href="#provided-resource">provided resource</a>. This <dfn
 id="provision">provision</dfn> request <em class=ct>MUST</em> be a <a
 href="http://www.w3.org/TR/UMP/#uniform-request">uniform request</a> <a
-href="#ref-UMP">[UMP]</a> to the <a href="#provider">Provider</a>'s URL with
+href="#ref-UMP">[UMP]</a> to the <a href="#provider-url">Provider URL</a> with
 method <code>POST</code> and entity media type
-<code>application/x-www-form-urlencoded</code>.  If any of the following
-attributes are specified on the <a href="#requisition">requisition</a> control,
-the entity content <em class=ct>MUST</em> include a parameter with the same name
-and value:</p>
-<ul>
-<li>alt</li>
-<li>title</li>
-<li>class</li>
-<li>accept</li>
-<li>multiple</li>
-</ul>
+<code>application/x-www-form-urlencoded</code>.  For any <a
+href="#requisition-parameters">requisition parameters</a> specified on the <a
+href="#requisition">requisition</a> control, the entity content <em
+class=ct>MUST</em> include a parameter with the same name and value.</p>
 
 <div class="example">
-<p>For example, a user-agent might send a <a href="#provision">provision</a>
-request like the following one:</p>
+<p>For example, a <a href="#powerbox">Powerbox</a> might send a <a
+href="#provision">provision</a> request like the following one:</p>
 <pre>
 POST /myvideos HTTP/1.1
 Host: example.com
@@ -264,82 +292,98 @@ accept=video%2F*&amp;class=trailer&amp;alt=Video+for+your+profile+page
 </pre>
 </div>
 
-<p>When providing a resource, a <a href="#provider">Provider</a> <em
+<p>To provide a resource, a <a href="#provider">Provider</a> <em
 class=ct>MUST</em> respond to a <a href="#provision">provision</a> request with
-a <code>200</code>-level response that specifies a URL for the <a
-href="#provided-resource">provided resource</a> in the <code>Location</code>
-response header. The user-agent <em class=ct>MUST</em> assign this URL to the
-corresponding <a href="#requisition">requisition</a> control's
-<code>value</code> attribute. If the response also includes a response entity,
-the user-agent <em class=ct>MUST</em> present it.</p>
+a <code>200</code>-level <a
+href="http://www.w3.org/TR/UMP/#uniform-response">uniform response</a> <a
+href="#ref-UMP">[UMP]</a> that specifies a <dfn
+id="provided-resource-url">provided resource URL</dfn> in the
+<code>Location</code> response header. The <a href="#powerbox">Powerbox</a> <em
+class=ct>MUST</em> assign this URL to the corresponding <a
+href="#requisition">requisition</a> control's <code>value</code> attribute. If
+the response also includes a response entity, the <a
+href="#powerbox">Powerbox</a> <em class=ct>MUST</em> present it.</p>
 
 <div class="example">
 <p>For example, an interactive <a href="#provider">Provider</a> might return a
 <a href="#provision">provision</a> response like:</p>
 <pre>
 HTTP/1.1 201 Created
+Access-Control-Allow-Origin: *
 Location: https://example.com/video123
 Content-Type: text/html
 
 &lt;html&gt;
 &hellip;
 </pre>
-<p>The user-agent displays the HTML content of the response in a new browser
-tab.</p>
+<p>The <a href="#powerbox">Powerbox</a> displays the HTML content of the
+response in a new browser tab.</p>
 </div>
 
-<h2 id="access"><span class="secno">7</span> Resource Access</h2>
-<p>A <a href="#provided-resource">provided resource</a>'s URL can be accessed
-via the corresponding <a href="#requisition">requisition</a> control's
-<code>value</code> attribute.</p>
+<h2 id="interact"><span class="secno">7</span> Resource Interaction</h2>
+<p>A <a href="#provided-resource-url">provided resource URL</a> can be obtained
+from the corresponding <a href="#requisition">requisition</a> control's
+<code>value</code> attribute. This URL may be used with any API supported by the
+user-agent.</p>
 <div class="example">
-<p>For example, <a href="#customer">Customer</a> content may extract the URL for
-the <a href="#provided-resource">provided resource</a> from the
+<p>For example, <a href="#customer">Customer</a> content may extract a <a
+href="#provided-resource-url">provided resource URL</a> from an
 <code>&lt;INPUT&gt;</code>'s <code>value</code> attribute and assign it to a
 <code>&lt;IMG&gt;</code>'s <code>src</code> attribute.</p>
 </div>
 
-<h3 id="submit"><span class="secno">7.1</span> Form Submission</h3>
+<h3 id="submit"><span class="secno">7.1</span> <code>&lt;FORM&gt;</code>
+Submission</h3>
 <p>To retain compatibility with existing content, the behavior of a file input
 control populated by a <a href="#provision">provision</a> request is compatible
 with one populated by selection of a file from the local filesystem.  If the
-file control is part of a <code>&lt;FORM&gt;</code> submission, the user-agent
-<em class=ct>MUST</em> fetch the content to be included in the submission by
-making a <a href="http://www.w3.org/TR/UMP/#uniform-request">uniform request</a>
-<a href="#ref-UMP">[UMP]</a> to the <a href="#provided-resource">provided
-resource</a>'s URL with method <code>GET</code>.  Since the <a
-href="#provided-resource">provided resource</a> URL is chosen by a remote site,
-it might not be safe to include this content in the <code>&lt;FORM&gt;</code>
-submission if the user's credentials were used to fetch the content.  The
-filename reported in the <code>&lt;FORM&gt;</code> submission <em
-class=ct>MUST</em> be the last segment of the path component of the provided
-resource URL, where the terms "path" and "segment" are as defined in <a
-href="#ref-uri">[RFC3986]</a>.</p>
+file control is part of a <code>&lt;FORM&gt;</code> submission, the <a
+href="#powerbox">Powerbox</a> <em class=ct>MUST</em> fetch the content to be
+included in the submission by making a <a
+href="http://www.w3.org/TR/UMP/#uniform-request">uniform request</a> <a
+href="#ref-UMP">[UMP]</a> to the <a href="#provided-resource-url">provided
+resource URL</a> with method <code>GET</code>.  If the <a
+href="#provided-resource-url">provided resource URL</a> identifies a collection
+of resources, a success response to this request <em class=ct>MUST</em> be of
+MIME type <code>multipart/mixed</code>, the same format specified by <a
+href="#ref-html4">[HTML4]</a> for submission of multiple files.  The filename
+reported in the <code>&lt;FORM&gt;</code> submission <em class=ct>MUST</em> be
+the last segment of the path component of the <a
+href="#provided-resource-url">provided resource URL</a>, where the terms "path"
+and "segment" are as defined in <a href="#ref-uri">[RFC3986]</a>.</p>
+
+<p>A uniform request is necessary since the <a
+href="#provided-resource-url">provided resource URL</a> is chosen by a remote
+site. Consequently, it might not be safe for the <code>&lt;FORM&gt;</code>
+submission to include content that was fetched using credentials.</p>
+
 
 <h2 id="define"><span class="secno">8</span> Resource Definition</h2>
 <p><em>This section is non-normative.</em></p>
 <p>This section offers advice to resource authors.</p>
 
 <p>Different types of <a href="#provided-resource">provided resources</a> differ
-in their support for: types of entity data, URL construction patterns and HTTP
-methods. A particular <a href="#customer">Customer</a> may only be able to
+in their support for: types of entity content, URL construction patterns and
+HTTP methods. A particular <a href="#customer">Customer</a> may only be able to
 interact with a <a href="#provided-resource">provided resource</a> that conforms
 to some profile of this range of possible behavior. To support interaction with
 many <a href="#customer">Customers</a>, a resource author should create
 resources that conform to existing profiles, such as those defined in standards
 and identified by a specific MIME media type. When new or custom behavior is
-required, a new profile can be defined and identified by a globally unique
-<code>class</code> attribute or MIME media type.  A custom <code>class</code>
-attribute is especially useful for coordinating URL construction patterns or
-additional semantics for entity data. A MIME media type is best used to
-coordinate entity content syntax. When responding to a <a
+required, a new profile can be defined and identified by a MIME media type or a
+globally unique <code>class</code> attribute.  A MIME media type is best used to
+coordinate entity content syntax.  A custom <code>class</code> attribute is
+especially useful for coordinating URL construction patterns or additional
+semantics for entity data. A globally unique class name can be generated by
+extending the namespace defined by the DNS, such as
+<code>org.example.MyInterface</code>.  When responding to a <a
 href="#provision">provision</a> request, a <a href="#provider">Provider</a>
-should use these identifiers to assist selection of an appropriate resource.
-A <a href="#provider">Provider</a> should ignore unrecognized identifiers.</p>
+should use these identifiers to assist selection of an appropriate resource.  A
+<a href="#provider">Provider</a> should ignore unrecognized identifiers.</p>
 
 <p>The Powerbox is a general purpose mechanism for introducing <a
 href="#customer">Customer</a> content to new and potentially private resources.
-New kinds of resources can be made accessible to Web content by using the
+New types of resources can be made accessible to Web content by using the
 Powerbox for discovery and introduction, existing user-agent APIs such as
 XMLHttpRequest for interaction, existing MIME media types for syntax, and HTTP
 methods for general semantics. In some cases, new <code>class</code> identifiers
@@ -360,6 +404,15 @@ the capture event ends, so does all of the Web content's permission to the
 camera. Other kinds of artifacts can similarly be subdivided into fine grained
 resources that match the granularity of typical user interaction patterns.</p>
 
+<p>Since a <a href="#provided-resource-url">provided resource URL</a> may be an
+alias for another resource URL, clients should keep in mind the Web's <a
+href="http://www.w3.org/TR/webarch/#uri-opacity">URI opacity</a> good practice
+and so not infer any properties of the referenced resource based on the content
+of a <a href="#provided-resource-url">provided resource URL</a>. In particular,
+a <a href="#provided-resource-url">provided resource URL</a> may redirect to a
+completely different URL identifying a resource hosted at a different Web site.
+</p>
+
 <h2 class="no-num" id="examples">Examples</h2>
 <p><em>This appendix is non-normative.</em>
 <p>This section illustrates use of the Powerbox mechanism in a variety of
@@ -376,21 +429,25 @@ href="#requisition">requisition</a> control like:</p>
        alt="Video for your profile page"&gt;
 </pre>
 <p>The user activates this <a href="#requisition">requisition</a> control,
-prompting the user-agent to present a choice of installed <a
-href="#provider">Providers</a>. The user selects the built-in video capture <a
-href="#provider">Provider</a>. The user-agent turns on the computer's video
-camera and microphone. A camera status indicator in the user-agent's chrome
-indicates a recording is in progress. The user-agent populates the <a
-href="#requisition">requisition</a> control's <code>value</code> attribute with
-a newly created URL that identifies the in-progress video stream. The value of
-this URL is specific to the particular user-agent, but it might look like:
+prompting the <a href="#powerbox">Powerbox</a> to present a choice of registered
+<a href="#provider">Providers</a>. The user selects the built-in video capture
+<a href="#provider">Provider</a>. This non-interactive <a
+href="#provider">Provider</a> turns on the computer's video camera and
+microphone and activates a video recording status indicator in the user-agent's
+chrome.  The <a href="#provider">Provider</a> responds to the <a
+href="#powerbox">Powerbox</a> with a newly created <a
+href="#provided-resource-url">provided resource URL</a> that identifies the
+in-progress video stream. The value of this URL is specific to the particular <a
+href="#provider">Provider</a>, but it might look like:
 <code>chrome://camera/live?s=mhbqcmmva5ja3</code>. By including an unguessable
-secret in the URL, the user-agent ensures that, initially, only the <a
-href="#customer">Customer</a> has access to the video stream. The <a
-href="#customer">Customer</a>, knowing it requested a resource of type
+secret in the URL, the <a href="#provider">Provider</a> ensures that, initially,
+only the <a href="#customer">Customer</a> has access to the video stream.  The
+<a href="#powerbox">Powerbox</a> assigns this URL to the corresponding <a
+href="#requisition">requisition</a> control's <code>value</code> attribute.</p>
+<p>The <a href="#customer">Customer</a>, knowing it requested a resource of type
 <code>org.w3c.Broadcast</code>, sends a request to the <a
 href="#provided-resource">provided resource</a> asking it to send it's content
-to the <a href="#customer">Customer</a>'s server. Using an XMLHttpRequest-based
+to the <a href="#customer">Customer</a>'s server. Using an XMLHttpRequest-like
 API, the <a href="#customer">Customer</a> sends the following JSON request to
 the <a href="#provided-resource">provided resource</a>:</p>
 <pre>
@@ -399,7 +456,8 @@ Content-Type: text/plain; charset=UTF-8
 
 [ { "@" : "https://example.org/user123/upload/?s=erigsadaslgwu" } ]
 </pre>
-<p>In response to this request, the user-agent sends the following request:</p>
+<p>In response to this request, the <a href="#provided-resource">provided
+resource</a> sends the following request:</p>
 <pre>
 POST /user123/upload/?s=erigsadaslgwu HTTP/1.1
 Host: example.org
