@@ -28,7 +28,7 @@
     src="http://www.w3.org/Icons/w3c_home"></a></p>
 
   <h1>Powerbox</h1>
-  <h2>Editor's Draft 15 February 2010</h2>
+  <h2>Editor's Draft 18 February 2010</h2>
   <dl>
     <dt>Editors:</dt>
       <dd>Tyler Close (<a href="http://www.google.com/">Google</a>)</dd>
@@ -53,7 +53,11 @@
 <hr>
 
 <h2 class="no-num no-toc" id="abstract">Abstract</h2>
-<p>TODO</p>
+<p>A Powerbox is a collection of resource providers that extend the scope of the
+HTML file selection control to include resources hosted at Web sites or created
+on-the-fly from sensors built into the user's Web browsing device. By using the
+Powerbox, customer content can request access to a user's private resources,
+regardless of where those resources reside or how they are created.</p>
 
 <h2 class="no-num no-toc" id="sotd">Status of This Document</h2>
 <p><em>This section describes the status of this document at the time of its
@@ -62,7 +66,10 @@ publications and the latest revision of this technical report can be found in
 the <a href="http://www.w3.org/TR/">W3C technical reports index</a>  at
 http://www.w3.org/TR/.</em></p>
 
-<p>TODO</p>
+<p>This document is for review by the Device APIs Working Group and is subject
+to change without notice. This document has no formal standing within W3C.
+Please consult the group's home page and the W3C technical reports index for
+information about the latest publications by this group.</p>
 
 <p>This document was produced by a group operating under the <a
   href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004
@@ -80,19 +87,23 @@ contains <a
 
 <h2 class="no-num no-toc" id="toc">Table of Contents</h2>
 <!--begin-toc-->
-<ul class=toc>
+<ul class="toc">
   <li><a href="#introduction"><span class=secno>1</span> Introduction</a></li>
-  <li><a href="#conformance"><span class=secno>2</span> Conformance Criteria</a>
-  <ul class=toc>
-    <li><a href="#terminology"><span class=secno>2.1</span> Terminology</a></li>
+  <li><a href="#conformance"><span class=secno>2</span> Conformance
+  Criteria</a></li>
+  <li><a href="#model"><span class=secno>3</span> Model</a></li>
+  <li><a href="#install"><span class=secno>4</span> Install a Provider</a></li>
+  <li><a href="#request"><span class=secno>5</span> Request a Resource</a></li>
+  <li><a href="#provide"><span class=secno>6</span> Provide a Resource</a></li>
+  <li><a href="#access"><span class=secno>7</span> Access a Resource</a>
+  <ul class="toc">
+    <li><a href="#submit"><span class=secno>7.1</span> Form Submission</a></li>
   </ul></li>
-  <li class=no-num><a href="#references">References</a>
-  <ul class=toc>
-    <li class=no-num><a href="#normative-references">Normative
-    References</a></li>
-    <li class=no-num><a href="#non-normative-references">Non-normative
-    References</a></li>
+  <li class=no-num><a href="#examples">Examples</a>
+  <ul class="toc">
+    <li><a href="#video-capture">Video Capture</a></li>
   </ul></li>
+  <li class=no-num><a href="#references">References</a></li>
   <li class=no-num><a href="#acknowledgments">Acknowledgments</a></li>
 </ul>
 <!--end-toc-->
@@ -159,16 +170,15 @@ this specification that are applicable to user-agents.</p>
 <p>This section provides an overview of the interaction model and definitions of
 the various actors and artifacts involved in these interactions.</p>
 
-<p>We aim to facilitate user directed introduction of resources to Customer
-content. <dfn id="customer">Customer</dfn> content declares interest in a
-particular kind of resource using the file input control defined in <a
+<p>We aim to facilitate user directed introduction of provided resources to
+Customer content. <dfn id="customer">Customer</dfn> content declares interest in
+a particular kind of resource using the file input control defined in <a
 href="#ref-html4">[HTML4]</a>.  A <dfn id="provider">Provider</dfn> is a
 resource that responds to an HTTP request asking for a URL. This URL identifies
-a resource for use by Customer content.  An interactive Provider additionally
+a resource provided to Customer content.  An interactive Provider additionally
 returns a representation to be presented to the user. This presentation
-typically supports user selection or configuration of the resource identified by
-the provided URL.  A non-interactive Provider requires no user interaction to
-provide a resource.</p>
+typically supports user selection or configuration of the provided resource.  A
+non-interactive Provider requires no user interaction to provide a resource.</p>
 
 <h2 id="install"><span class="secno">4 </span>Install a Provider</h2>
 <p>A <a href="#provider">Provider</a> is offered for installation in a
@@ -210,7 +220,7 @@ select control such as:</p>
 <p>The <code>class</code>, <code>accept</code> and <code>multiple</code>
 attributes of the &lt;INPUT&gt; identify the type of resource the <a
 href="#customer">Customer</a> is requesting. The <code>alt</code> or
-<code>title</code> attributes express the reason for the request.</p>
+<code>title</code> attribute expresses the reason for the request.</p>
 
 <h2 id="provide"><span class="secno">6 </span>Provide a Resource</h2>
 <p>When a user activates a file select control, the user-agent <em
@@ -268,12 +278,13 @@ tab.</p>
 </div>
 
 <h2 id="access"><span class="secno">7 </span>Access a Resource</h2>
-<p>The requested resource's URL can be accessed via the corresponding
+<p>The provided resource's URL can be accessed via the corresponding
 <code>&lt;INPUT&gt;</code>'s <code>value</code> attribute.</p>
 <div class="example">
-<p>For example, <a href="#customer">Customer</a> content may extract the
-resource URL from the <code>&lt;INPUT&gt;</code>'s <code>value</code> attribute
-and assign it to a <code>&lt;IMG&gt;</code>'s <code>src</code> attribute.</p>
+<p>For example, <a href="#customer">Customer</a> content may extract the URL for
+the provided resource from the <code>&lt;INPUT&gt;</code>'s <code>value</code>
+attribute and assign it to a <code>&lt;IMG&gt;</code>'s <code>src</code>
+attribute.</p>
 </div>
 
 <h3 id="submit"><span class="secno">7.1 </span>Form Submission</h3>
@@ -284,12 +295,12 @@ If the file control is part of a <code>&lt;FORM&gt;</code> submission, the
 user-agent <em class=ct>MUST</em> use a <a
 href="http://www.w3.org/TR/UMP/#uniform-request">uniform request</a> <a
 href="#ref-UMP">[UMP]</a> to <code>GET</code> the content to include in the
-<code>&lt;FORM&gt;</code> submission. Since the resource URL is chosen by a
-remote site, it might not be safe to include this content in the
+<code>&lt;FORM&gt;</code> submission. Since the provided resource URL is chosen
+by a remote site, it might not be safe to include this content in the
 <code>&lt;FORM&gt;</code> submission if the user's credentials are used to fetch
 the content.  The filename reported in the <code>&lt;FORM&gt;</code> submission
-<em class=ct>MUST</em> be the last segment of the path component of the resource
-URL, where the terms "path" and "segment" are as defined in <a
+<em class=ct>MUST</em> be the last segment of the path component of the provided
+resource URL, where the terms "path" and "segment" are as defined in <a
 href="#ref-uri">[RFC3986]</a>.</p>
 
 <h2 class="no-num" id="examples">Examples</h2>
@@ -320,9 +331,9 @@ user-agent, but it might look like:
 number in the URL, the user-agent ensures that, initially, only the <a
 href="#customer">Customer</a> has access to the video stream. The <a
 href="#customer">Customer</a>, knowing it requested a resource of type
-<code>org.w3c.Broadcast</code>, sends a request to the resource asking it to
-send it's content to the <a href="#customer">Customer</a>'s server. Using an
-XMLHttpRequest-based API, the <a href="#customer">Customer</a> sends the
+<code>org.w3c.Broadcast</code>, sends a request to the provided resource asking
+it to send it's content to the <a href="#customer">Customer</a>'s server. Using
+an XMLHttpRequest-based API, the <a href="#customer">Customer</a> sends the
 following request:</p>
 <pre>
 POST chrome://camera/live?s=mhbqcmmva5ja3 HTTP/1.1
@@ -347,7 +358,6 @@ ends as it reaches the end of the video stream. Further requests to the video
 stream URL return <code>410</code> responses.</p>
 
 <h2 class="no-num" id="references">References</h2>
-<h3 class="no-num" id="normative-references">Normative References</h3>
 <dl>
 
   <dt id="ref-html4">[HTML4]</dt>
@@ -373,44 +383,6 @@ stream URL return <code>410</code> responses.</p>
   <dd><cite><a href="http://tools.ietf.org/html/rfc3986">Uniform Resource
       Identifier (URI): Generic Syntax</a></cite>, T. Berners-Lee, R. Fielding,
   L. Masinter, editors. IETF, January 2005.</dd>
-</dl>
-
-<h3 class="no-num" id="non-normative-references">Non-normative References</h3>
-<dl>
-  <dt id="ref-clickjacking">[clickjacking]</dt>
-  <dd><cite><a
-      href="http://www.sectheory.com/clickjacking.htm">Clickjacking</a></cite>,
-  R. Hansen, J. Grossman. SecTheory 12 September 2008.</dd>
-
-  <dt id="ref-csrf">[CSRF]</dt>
-  <dd><cite><a
-      href="http://marc.info/?l=bugtraq&amp;m=99263135911884&amp;w=2">Cross-Site
-      Request Forgeries</a></cite>, P. Watkins. Bugtraq, 15 June 2001.</dd>
-
-  <dt id="ref-ECMAScript">[ECMAScript]</dt>
-  <dd><cite><a
-  href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf">ECMA-262:
-  ECMAScript Language Specification</a>, third edition</cite>, ECMA. December
-  1999.</dd>
-
-  <dt id="ref-JSON">[JSON]</dt>
-  <dd><cite><a href="http://www.ietf.org/rfc/rfc4627.txt">The application/json
-  Media Type for JavaScript Object Notation (JSON)</a></cite>, D. Crockford.
-  IETF, July 2006.</dd>
-
-  <dt id="ref-sse">[SSE]</dt>
-  <dd><cite><a href="http://www.w3.org/TR/eventsource/">Server-Sent
-      Events</a></cite> (wok in progress), I. Hickson, editor. W3C, 2009.</dd>
-
-  <dt id="ref-TLS">[TLS]</dt>
-  <dd><cite><a
-  href="http://www.ietf.org/dyn/wg/charter/tls-charter.html">Transport Layer
-  Security</a></cite>, E. Rescorla. IETF, 2009.</dd>
-
-  <dt id="ref-xhr">[XHR]</dt>
-  <dd><cite><a
-      href="http://www.w3.org/TR/XMLHttpRequest/">XMLHttpRequest</a></cite>
-  (work in progress), A. van Kesteren. W3C, 2009.</dd>
 </dl>
 
 <h2 class="no-num" id="acknowledgments">Acknowledgments</h2>
