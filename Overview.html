@@ -28,7 +28,7 @@
     src="http://www.w3.org/Icons/w3c_home"></a></p>
 
   <h1>Powerbox</h1>
-  <h2>Editor's Draft 18 February 2010</h2>
+  <h2>Editor's Draft 19 February 2010</h2>
   <dl>
     <dt>Editors:</dt>
       <dd>Tyler Close (<a href="http://www.google.com/">Google</a>)</dd>
@@ -318,8 +318,8 @@ href="#ref-uri">[RFC3986]</a>.</p>
 
 <h2 id="define"><span class="secno">8</span> Resource Definition</h2>
 <p><em>This section is non-normative.</em></p>
-<p>This section offers advice to resource authors who are defining new types of
-resources.</p>
+<p>This section offers advice to resource authors.</p>
+
 <p>Different types of <a href="#provided-resource">provided resources</a> differ
 in their support for: types of entity data, URL construction patterns and HTTP
 methods. A particular <a href="#customer">Customer</a> may only be able to
@@ -328,11 +328,14 @@ to some profile of this range of possible behavior. To support interaction with
 many <a href="#customer">Customers</a>, a resource author should create
 resources that conform to existing profiles, such as those defined in standards
 and identified by a specific MIME media type. When new or custom behavior is
-required, a new profile can be defined and identified by a unique
+required, a new profile can be defined and identified by a globally unique
 <code>class</code> attribute or MIME media type.  A custom <code>class</code>
 attribute is especially useful for coordinating URL construction patterns or
 additional semantics for entity data. A MIME media type is best used to
-coordinate entity content syntax.</p>
+coordinate entity content syntax. When responding to a <a
+href="#provision">provision</a> request, a <a href="#provider">Provider</a>
+should use these identifiers to assist selection of an appropriate resource.
+A <a href="#provider">Provider</a> should ignore unrecognized identifiers.</p>
 
 <p>The Powerbox is a general purpose mechanism for introducing <a
 href="#customer">Customer</a> content to new and potentially private resources.
