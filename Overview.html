@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en-US">
+<head>
+  <title>Powerbox</title>
+  <meta http-equiv="Content-type" content="text/html;charset=US-ASCII">
+  <style type="text/css">
+   .example { margin-left:1em; padding-left:1em; border-left:double; color:#222; background:#fcfcfc }
+   .note { margin-left:2em; font-weight:bold; font-style:italic; color:green }
+   .note pre { font-weight:normal; font-style:normal }
+   pre > code, li > code { color:inherit; background:transparent }
+   .XXX { padding:.5em; border:solid #f00 }
+   em.ct {
+    text-transform:lowercase;
+    font-variant:small-caps;
+    font-style:normal
+   }
+   dfn { font-weight:bold; font-style:normal }
+   code { color: maroon; }
+   code:link, code:visited { color:inherit }
+  </style>
+  <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-ED">
+</head>
+<body>
+
+<div class="head">
+  <p><a href="http://www.w3.org/"><img alt="W3C" height="48" width="72"
+    src="http://www.w3.org/Icons/w3c_home"></a></p>
+
+  <h1>Powerbox</h1>
+  <h2>Editor's Draft 15 February 2010</h2>
+  <dl>
+    <dt>Editors:</dt>
+      <dd>Tyler Close (<a href="http://www.google.com/">Google</a>)</dd>
+      <dd>Mark Seaborn (<a href="http://www.google.com/">Google</a>)</dd>
+  </dl>
+  <p class="copyright"><a
+  href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>
+  &copy; 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web
+  Consortium">W3C</acronym></a><sup>&reg;</sup> (<a
+  href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of
+  Technology">MIT</acronym></a>, <a href="http://www.ercim.eu/"><acronym
+  title="European Research Consortium for Informatics and
+  Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>),
+  All Rights Reserved. W3C <a
+  href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+  <a
+  href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+  and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document
+  use</a> rules apply.</p>
+</div>
+
+<hr>
+
+<h2 class="no-num no-toc" id="abstract">Abstract</h2>
+<p>TODO</p>
+
+<h2 class="no-num no-toc" id="sotd">Status of This Document</h2>
+<p><em>This section describes the status of this document at the time of its
+publication. Other documents may supersede this document. A list of current W3C
+publications and the latest revision of this technical report can be found in
+the <a href="http://www.w3.org/TR/">W3C technical reports index</a>  at
+http://www.w3.org/TR/.</em></p>
+
+<p>TODO</p>
+
+<p>This document was produced by a group operating under the <a
+  href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004
+  W3C Patent Policy</a>. W3C maintains a <a
+  href="http://www.w3.org/2004/01/pp-impl/42538/status" rel=disclosure>public
+  list of any patent disclosures</a> made in connection with the deliverables of
+the group; that page also includes instructions for disclosing a patent. An
+individual who has actual knowledge of a patent which the individual believes
+contains <a
+  href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential
+  Claim(s)</a> must disclose the information in accordance with <a
+  href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">section
+  6 of the W3C Patent Policy</a>.</p>
+
+
+<h2 class="no-num no-toc" id="toc">Table of Contents</h2>
+<!--begin-toc-->
+<ul class=toc>
+  <li><a href="#introduction"><span class=secno>1</span> Introduction</a></li>
+  <li><a href="#conformance"><span class=secno>2</span> Conformance Criteria</a>
+  <ul class=toc>
+    <li><a href="#terminology"><span class=secno>2.1</span> Terminology</a></li>
+  </ul></li>
+  <li class=no-num><a href="#references">References</a>
+  <ul class=toc>
+    <li class=no-num><a href="#normative-references">Normative
+    References</a></li>
+    <li class=no-num><a href="#non-normative-references">Non-normative
+    References</a></li>
+  </ul></li>
+  <li class=no-num><a href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+<!--end-toc-->
+
+<h2 id="introduction"><span class="secno">1 </span>Introduction</h2>
+<p><em>This section is non-normative.</em></p>
+<p>Today's users have access to a great variety of private resources beyond the
+files stored on their local computing device. Web sites maintain user
+collections of photos, email, contact information, documents, videos and other
+kinds content.  In addition to static content, these sites also offer
+interactive resources such as discussion forums and event planning. A great
+variety of such sites exist and ever more are created. Today's computing devices
+are also typically equiped with many sensors, such as a camera, microphone,
+geolocation and even physical orientation of the device. These sensors enable
+quick creation of new resources.  In such a resource rich environment, a
+particular resource might want to support linking and interaction with other
+resources without being tightly coupled to where these resources are hosted or
+how they are produced. To meet this need, we introduce a mechanism that
+enables:</p>
+<ul>
+<li>customer content to declare interest in a particular type of resource</li>
+<li>provider content to declare availability of resources</li>
+<li>user directed introduction of a provided resource to customer content</li>
+</ul>
+<p>Using this mechanism, customer content can acquire a link to a resource in a
+uniform way, independent of where the resource is hosted or how it is created.
+The resource may be created on-the-fly from local sensors, such as the camera,
+or hosted at a web site, such as a photo sharing site. Similarly, a resource
+host or creator can offer its resources in a way that makes them readily
+accessible from customer content. To maintain privacy and security, this
+facilitated exchange of links between providers and customers remains under the
+control and direction of the user.</p>
+<p>To support compatibility with legacy user-agents and legacy customer content,
+we reuse the existing file input control in HTML as the mechanism for declaring
+interest in a particular type of resource. Without changing the syntax or
+semantics of this HTML element, we extend its scope to also include resources
+hosted by web sites or dynamically created from local sensors. To support the
+decentralized development of an ever evolving set of resource types, we reuse
+the <code>class</code> and <code>accept</code> attributes of the file input
+control as the namespace for resource types. Customer content declares interest
+in a particular type of resource by annotating a file input control with
+particular MIME media types and/or class names. To enable customer content to
+initiate interactive selection of provided resources, we define an HTTP request
+pattern for launching a resource provider's resource selection presentation.</p>
+
+<h2 id="conformance"><span class="secno">2 </span>Conformance Criteria</h2>
+<p>This specification is written for resource authors and user-agents.</p>
+
+<p>As well as sections and appendices marked as non-normative, all diagrams,
+examples, and notes in this specification are non-normative.  Everything else in
+this specification is normative.</p>
+
+<p>In this specification, the terms <em class=ct>MUST</em> and <em
+class=ct>MUST NOT</em> are to be interpreted as described in <a
+href="#ref-ct">[RFC2119]</a>.</p>
+
+<p>A conformant resource is one that implements all the requirements listed in
+this specification that are applicable to resources.</p>
+
+<p>A conformant user-agent is one that implements all the requirements listed in
+this specification that are applicable to user-agents.</p>
+
+<h2 id="model"><span class="secno">3 </span>Model</h2>
+<p>This section provides an overview of the interaction model and definitions of
+the various actors and artifacts involved in these interactions.</p>
+
+<p>We aim to facilitate user directed introduction of resources to Customer
+content. <dfn id="customer">Customer</dfn> content declares interest in a
+particular kind of resource using the file input control defined in <a
+href="#ref-html4">[HTML4]</a>. A Customer is identified by the host and port
+number from which this content was fetched. A <dfn id="provider">Provider</dfn>
+is a resource that responds to an HTTP request that asks for a URL to be given
+to Customer content. This URL identifies a <dfn id="service">Service</dfn>
+resource. An interactive Provider additionally returns a representation to be
+presented to the user, so as to select or configure the Service. A
+non-interactive Provider requires no user interaction to identify a Service.</p>
+
+<h2 id="install-provider"><span class="secno">3 </span>Install a Provider</h2>
+<p>A page offers a <a href="#provider">Provider</a> for installation in a
+user-agent by including a <code>&lt;LINK&gt;</code> element with a
+<code>rel</code> attribute of value <code>Provider</code>.</p>
+
+<div class="example">
+<p>For example, a page offers a Provider by including a
+<code>&lt;LINK&gt;</code> such as:</p>
+<pre>
+&lt;LINK rel="Provider" href="/myvideos" title="Video Selector"&gt;
+</pre>
+</div>
+
+<p>A user-agent <em class=ct>MUST</em> provide a presentation of an offered
+Provider that enables the user to request it be installed, unless it is already
+installed.</p>
+
+<h2 id="request-service"><span class="secno">4 </span>Request a Service</h2>
+<p>A page requests access to a Service by including a <a
+href="http://www.w3.org/TR/html401/interact/forms.html#file-select">file select
+control</a>.</p>
+
+<div class="example">
+<p>For example, a page requests access to a video by including a file select
+control such as:</p>
+<pre>
+Your presentation: &lt;input type="file" accept="video/*" class="trailer"&gt;
+</pre>
+</div>
+
+<h2 id="produce-service"><span class="secno">5 </span>Produce a Service</h2>
+<p>When a user activates a file select control, the user-agent <em
+class=ct>MUST</em> provide a presentation that enables selection of an installed
+<a href="#Provider">Provider</a>. If the user selects one, the
+user-agent <em class=ct>MUST</em> send a <dfn id="service-access">service access
+request</dfn> which asks a <a href="#Provider">Provider</a> to produce a
+reference to a <a href="#service">Service</a>, to  URL, which is a
+<code>POST</code> request with an entity of type
+<code>application/x-www-form-urlencoded</code>. The entity content <em
+class=ct>MUST</em> include a parameter with name <code>from</code>, whose value
+is the <code>host[:port]</code> component of the URL for the requesting page. If
+any of the following attributes are specified on the file select control, the
+entity content also <em class=ct>MUST</em> include a parameter with the same
+name and value:</p>
+<ul>
+<li>title</li>
+<li>class</li>
+<li>accept</li>
+<li>multiple</li>
+</ul>
+
+<div class="example">
+<p>For example, a user-agent might send a request like the following one to a
+selected <a href="#Provider">Provider</a>:</p>
+<pre>
+POST /myvideos HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+
+from=example.org&amp;accept=video%2F*&amp;class=trailer
+</pre>
+</div>
+
+<p>A <code>200</code>-level response to a <a href="#service-access">service
+access request</a> provides the <a href="#service">Service</a> URL in the
+<code>Location</code> response header.  If the response also includes a response
+entity, the user-agent <em class=ct>MUST</em> present it. An interactive <a
+href="#provider">Provider</a> includes a response entity that lets the user
+select the target of the <a href="#service">Service</a> URL. A non-interactive
+<a href="#provider">Provider</a> does not include a response entity.</p>
+
+<div class="example">
+<p>For example, an interactive <a href="#Provider">Provider</a> returns a
+response like:</p>
+<pre>
+HTTP/1.1 202 Accepted
+Location: https://example.com/video123
+Content-Type: text/html
+
+&lt;html&gt;
+&hellip;
+</pre>
+<p>The user-agent displays the HTML content of the response in a new browser
+tab.</p>
+</div>
+
+<h2 id="access-service"><span class="secno">6 </span>Access a Service</h2>
+<h3 id="access-service"><span class="secno">6 </span>Form Submission</h3>
+<h3 id="access-service"><span class="secno">6 </span>"value" Attribute</h3>
+
+<h2 class="no-num" id="references">References</h2>
+<h3 class="no-num" id="normative-references">Normative References</h3>
+<dl>
+
+  <dt id="ref-html4">[HTML4]</dt>
+  <dd><cite><a href="http://www.w3.org/TR/html401/">HTML 4.01
+      Specification</a></cite>, D. Ragget, A. Le Hors, I. Jacobs. W3C, 24
+  December 1999.</dd>
+
+  <dt id="ref-http">[HTTP]</dt>
+  <dd><cite><a href="http://www.ietf.org/rfc/rfc2616.txt">Hypertext Transfer
+  Protocol -- HTTP/1.1</a></cite>, R. Fielding, J. Gettys, J. Mogul, H.
+  Frystyk, L. Masinter, P. Leach, T. Berners-Lee. IETF, June 1999.</dd>
+
+  <dt id="ref-ct">[RFC2119]</dt>
+  <dd><cite><a href="http://tools.ietf.org/html/rfc2119">Key words for use in
+      RFCs to Indicate Requirement Levels</a></cite>, S. Bradner. IETF, March
+  1997.</dd>
+
+  <dt id="ref-uri">[RFC3986]</dt>
+  <dd><cite><a href="http://tools.ietf.org/html/rfc3986">Uniform Resource
+      Identifier (URI): Generic Syntax</a></cite>, T. Berners-Lee, R. Fielding,
+  L. Masinter, editors. IETF, January 2005.</dd>
+</dl>
+
+<h3 class="no-num" id="non-normative-references">Non-normative References</h3>
+<dl>
+  <dt id="ref-clickjacking">[clickjacking]</dt>
+  <dd><cite><a
+      href="http://www.sectheory.com/clickjacking.htm">Clickjacking</a></cite>,
+  R. Hansen, J. Grossman. SecTheory 12 September 2008.</dd>
+
+  <dt id="ref-csrf">[CSRF]</dt>
+  <dd><cite><a
+      href="http://marc.info/?l=bugtraq&amp;m=99263135911884&amp;w=2">Cross-Site
+      Request Forgeries</a></cite>, P. Watkins. Bugtraq, 15 June 2001.</dd>
+
+  <dt id="ref-ECMAScript">[ECMAScript]</dt>
+  <dd><cite><a
+  href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf">ECMA-262:
+  ECMAScript Language Specification</a>, third edition</cite>, ECMA. December
+  1999.</dd>
+
+  <dt id="ref-JSON">[JSON]</dt>
+  <dd><cite><a href="http://www.ietf.org/rfc/rfc4627.txt">The application/json
+  Media Type for JavaScript Object Notation (JSON)</a></cite>, D. Crockford.
+  IETF, July 2006.</dd>
+
+  <dt id="ref-sse">[SSE]</dt>
+  <dd><cite><a href="http://www.w3.org/TR/eventsource/">Server-Sent
+      Events</a></cite> (wok in progress), I. Hickson, editor. W3C, 2009.</dd>
+
+  <dt id="ref-TLS">[TLS]</dt>
+  <dd><cite><a
+  href="http://www.ietf.org/dyn/wg/charter/tls-charter.html">Transport Layer
+  Security</a></cite>, E. Rescorla. IETF, 2009.</dd>
+
+  <dt id="ref-xhr">[XHR]</dt>
+  <dd><cite><a
+      href="http://www.w3.org/TR/XMLHttpRequest/">XMLHttpRequest</a></cite>
+  (work in progress), A. van Kesteren. W3C, 2009.</dd>
+</dl>
+
+<h2 class="no-num" id="acknowledgments">Acknowledgments</h2>
+<p><em>This appendix is non-normative.</em>
+
+<p>The editors thank ...</p>
+
+</body>
+</html>
