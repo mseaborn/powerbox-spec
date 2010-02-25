@@ -162,18 +162,18 @@ the various actors and artifacts involved in these interactions.</p>
 <p>We aim to facilitate user directed introduction of resources to Customer
 content. <dfn id="customer">Customer</dfn> content declares interest in a
 particular kind of resource using the file input control defined in <a
-href="#ref-html4">[HTML4]</a>. A Customer is identified by the host and port
-number from which this content was fetched. A <dfn id="provider">Provider</dfn>
-is a resource that responds to an HTTP request that asks for a URL to be given
-to Customer content. This URL identifies a <dfn id="service">Service</dfn>
-resource. An interactive Provider additionally returns a representation to be
-presented to the user, so as to select or configure the Service. A
-non-interactive Provider requires no user interaction to identify a Service.</p>
+href="#ref-html4">[HTML4]</a>.  A <dfn id="provider">Provider</dfn> is a
+resource that responds to an HTTP request asking for a URL. This URL identifies
+a resource for use by Customer content.  An interactive Provider additionally
+returns a representation to be presented to the user. This presentation
+typically supports user selection or configuration of the resource identified by
+the provided URL.  A non-interactive Provider requires no user interaction to
+provide a resource.</p>
 
-<h2 id="install-provider"><span class="secno">3 </span>Install a Provider</h2>
-<p>A page offers a <a href="#provider">Provider</a> for installation in a
-user-agent by including a <code>&lt;LINK&gt;</code> element with a
-<code>rel</code> attribute of value <code>Provider</code>.</p>
+<h2 id="install"><span class="secno">4 </span>Install a Provider</h2>
+<p>A <a href="#provider">Provider</a> is offered for installation in a
+user-agent by including a link with a <code>rel</code> attribute of value
+<code>Provider</code>.</p>
 
 <div class="example">
 <p>For example, a page offers a Provider by including a
@@ -181,45 +181,57 @@ user-agent by including a <code>&lt;LINK&gt;</code> element with a
 <pre>
 &lt;LINK rel="Provider" href="/myvideos" title="Video Selector"&gt;
 </pre>
+<p>Alternatively, a page offers a Provider by including a
+<code>&lt;A&gt;</code> such as:</p>
+<pre>
+&lt;a rel="Provider" href="/myvideos"&gt;Video Selector&lt;/a&gt;
+</pre>
 </div>
 
 <p>A user-agent <em class=ct>MUST</em> provide a presentation of an offered
 Provider that enables the user to request it be installed, unless it is already
 installed.</p>
 
-<h2 id="request-service"><span class="secno">4 </span>Request a Service</h2>
-<p>A page requests access to a Service by including a <a
+<h2 id="request"><span class="secno">5 </span>Request a Resource</h2>
+<p><a href="#customer">Customer</a> content requests access to a resource by
+including a <a
 href="http://www.w3.org/TR/html401/interact/forms.html#file-select">file select
 control</a>.</p>
 
 <div class="example">
-<p>For example, a page requests access to a video by including a file select
-control such as:</p>
+<p>For example, Customer content requests access to a video by including a file
+select control such as:</p>
 <pre>
-Your presentation: &lt;input type="file" accept="video/*" class="trailer"&gt;
+&lt;input type="file" accept="video/*" class="trailer"
+       alt="Video for your profile page"&gt;
 </pre>
 </div>
 
-<h2 id="produce-service"><span class="secno">5 </span>Produce a Service</h2>
+<p>The <code>class</code>, <code>accept</code> and <code>multiple</code>
+attributes of the &lt;INPUT&gt; identify the type of resource the <a
+href="#customer">Customer</a> is requesting. The <code>alt</code> or
+<code>title</code> attributes express the reason for the request.</p>
+
+<h2 id="provide"><span class="secno">6 </span>Provide a Resource</h2>
 <p>When a user activates a file select control, the user-agent <em
-class=ct>MUST</em> provide a presentation that enables selection of an installed
-<a href="#Provider">Provider</a>. If the user selects one, the
-user-agent <em class=ct>MUST</em> send a <dfn id="service-access">service access
-request</dfn> which asks a <a href="#Provider">Provider</a> to produce a
-reference to a <a href="#service">Service</a>, to  URL, which is a
-<code>POST</code> request with an entity of type
-<code>application/x-www-form-urlencoded</code>. The entity content <em
-class=ct>MUST</em> include a parameter with name <code>from</code>, whose value
-is the <code>host[:port]</code> component of the URL for the requesting page. If
-any of the following attributes are specified on the file select control, the
-entity content also <em class=ct>MUST</em> include a parameter with the same
-name and value:</p>
+class=ct>MUST</em> enable user selection of an installed <a
+href="#Provider">Provider</a>. If the user selects one, the
+user-agent <em class=ct>MUST</em> send a <dfn id="requisition">requisition</dfn>
+request which asks a <a href="#Provider">Provider</a> for a URL. This request is
+a <code>POST</code> with an entity of type
+<code>application/x-www-form-urlencoded</code>.  If any of the following
+attributes are specified on the file select control, the entity content also <em
+class=ct>MUST</em> include a parameter with the same name and value:</p>
 <ul>
+<li>alt</li>
 <li>title</li>
 <li>class</li>
 <li>accept</li>
 <li>multiple</li>
 </ul>
+<p>Any <code>Referer</code> <a href="#ref-http">[HTTP]</a> header on the
+requisition request has the same value as for other requests from the <a
+href="#customer">Customer</a> content.</p>
 
 <div class="example">
 <p>For example, a user-agent might send a request like the following one to a
@@ -227,22 +239,21 @@ selected <a href="#Provider">Provider</a>:</p>
 <pre>
 POST /myvideos HTTP/1.1
 Host: example.com
+Referer: https://example.org/user123?q=profile
 Content-Type: application/x-www-form-urlencoded
 
-from=example.org&amp;accept=video%2F*&amp;class=trailer
+accept=video%2F*&amp;class=trailer&amp;alt=Video+for+your+profile+page
 </pre>
 </div>
 
-<p>A <code>200</code>-level response to a <a href="#service-access">service
-access request</a> provides the <a href="#service">Service</a> URL in the
-<code>Location</code> response header.  If the response also includes a response
-entity, the user-agent <em class=ct>MUST</em> present it. An interactive <a
-href="#provider">Provider</a> includes a response entity that lets the user
-select the target of the <a href="#service">Service</a> URL. A non-interactive
-<a href="#provider">Provider</a> does not include a response entity.</p>
+<p>A <code>200</code>-level response to a <a href="#requisition">requisition</a>
+request provides the requested resource URL in the <code>Location</code>
+response header. This URL is assigned to the corresponding &lt;INPUT&gt;'s
+<code>value</code> attribute. If the response also includes a response entity,
+the user-agent <em class=ct>MUST</em> present it.</p>
 
 <div class="example">
-<p>For example, an interactive <a href="#Provider">Provider</a> returns a
+<p>For example, an interactive <a href="#provider">Provider</a> returns a
 response like:</p>
 <pre>
 HTTP/1.1 202 Accepted
@@ -256,9 +267,84 @@ Content-Type: text/html
 tab.</p>
 </div>
 
-<h2 id="access-service"><span class="secno">6 </span>Access a Service</h2>
-<h3 id="access-service"><span class="secno">6 </span>Form Submission</h3>
-<h3 id="access-service"><span class="secno">6 </span>"value" Attribute</h3>
+<h2 id="access"><span class="secno">7 </span>Access a Resource</h2>
+<p>The requested resource's URL can be accessed via the corresponding
+<code>&lt;INPUT&gt;</code>'s <code>value</code> attribute.</p>
+<div class="example">
+<p>For example, <a href="#customer">Customer</a> content may extract the
+resource URL from the <code>&lt;INPUT&gt;</code>'s <code>value</code> attribute
+and assign it to a <code>&lt;IMG&gt;</code>'s <code>src</code> attribute.</p>
+</div>
+
+<h3 id="submit"><span class="secno">7.1 </span>Form Submission</h3>
+<p>To retain compatibility with existing content, the behavior of a file input
+control populated by a <a href="#requisition">requisition</a> request is
+compatible with one populated by selection of a file from the local filesystem.
+If the file control is part of a <code>&lt;FORM&gt;</code> submission, the
+user-agent <em class=ct>MUST</em> use a <a
+href="http://www.w3.org/TR/UMP/#uniform-request">uniform request</a> <a
+href="#ref-UMP">[UMP]</a> to <code>GET</code> the content to include in the
+<code>&lt;FORM&gt;</code> submission. Since the resource URL is chosen by a
+remote site, it might not be safe to include this content in the
+<code>&lt;FORM&gt;</code> submission if the user's credentials are used to fetch
+the content.  The filename reported in the <code>&lt;FORM&gt;</code> submission
+<em class=ct>MUST</em> be the last segment of the path component of the resource
+URL, where the terms "path" and "segment" are as defined in <a
+href="#ref-uri">[RFC3986]</a>.</p>
+
+<h2 class="no-num" id="examples">Examples</h2>
+<p><em>This section is non-normative.</em></p>
+<p>This section illustrates use of the Powerbox mechanism in a variety of
+scenarios.</p>
+<h3 class="no-num" id="video-capture">Video Capture</h3>
+<p>In this scenario, a <a href="#customer">Customer</a> receives access to a
+live video stream from a camera attached to the user's computer. The <a
+href="#provider">Provider</a> is built into the user-agent, instead of being
+hosted on the Web.</p>
+<p>The <a href="#customer">Customer</a> content includes a file select control
+like:</p>
+<pre>
+&lt;input type="file" accept="video/*" class="org.w3c.Broadcast"
+       alt="Video for your profile page"&gt;
+</pre>
+<p>The user activates this file select control, prompting the user-agent to
+present a choice of installed <a href="#provider">Providers</a>. The user
+selects the built-in video capture <a href="#provider">Provider</a>. The
+user-agent turns on the computer's video camera and microphone. A video status
+indicator in the user-agent's chrome indicates a recording is in
+progress. The user-agent populates the <code>&lt;INPUT&gt;</code>'s
+<code>value</code> attribute with a newly created URL that identifies the
+in-progress video stream. The value of this URL is specific to the particular
+user-agent, but it might look like:
+<code>chrome://camera/live?s=mhbqcmmva5ja3</code>. By including an unguessable
+number in the URL, the user-agent ensures that, initially, only the <a
+href="#customer">Customer</a> has access to the video stream. The <a
+href="#customer">Customer</a>, knowing it requested a resource of type
+<code>org.w3c.Broadcast</code>, sends a request to the resource asking it to
+send it's content to the <a href="#customer">Customer</a>'s server. Using an
+XMLHttpRequest-based API, the <a href="#customer">Customer</a> sends the
+following request:</p>
+<pre>
+POST chrome://camera/live?s=mhbqcmmva5ja3 HTTP/1.1
+Content-Type: application/json
+
+[ { "@" : "https://example.org/user123/upload/?s=erigsadaslgwu" } ]
+</pre>
+<p>In response to this request, the user-agent sends the following request:</p>
+<pre>
+POST /user123/upload/?s=erigsadaslgwu HTTP/1.1
+Host: example.org
+Content-Type: video/mpeg
+
+&hellip;
+</pre>
+<p>The <a href="#customer">Customer</a>'s site begins receiving the live video
+stream from the user-agent.</p>
+<p>When done recording, the user selects a "Stop" option from the video
+indicator in the user-agent's chrome. The user-agent turns off the computer's
+camera and microphone, thus terminating the live video stream. The video upload
+ends as it reaches the end of the video stream. Further requests to the video
+stream URL return <code>410</code> responses.</p>
 
 <h2 class="no-num" id="references">References</h2>
 <h3 class="no-num" id="normative-references">Normative References</h3>
@@ -278,6 +364,10 @@ tab.</p>
   <dd><cite><a href="http://tools.ietf.org/html/rfc2119">Key words for use in
       RFCs to Indicate Requirement Levels</a></cite>, S. Bradner. IETF, March
   1997.</dd>
+
+  <dt id="ref-UMP">[UMP]</dt>
+  <dd><cite><a href="http://www.w3.org/TR/UMP/">Uniform Messaging Policy, Level
+  One</a></cite>, T. Close, M. Miller. W3C, 2010.</dd>
 
   <dt id="ref-uri">[RFC3986]</dt>
   <dd><cite><a href="http://tools.ietf.org/html/rfc3986">Uniform Resource
